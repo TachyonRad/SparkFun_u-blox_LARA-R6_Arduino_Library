@@ -122,7 +122,7 @@ bool LARA_R6::begin(SoftwareSerial &softSerial, unsigned long baud)
 }
 #endif
 
-bool LARA_R6::begin(HardwareSerial &hardSerial, unsigned long baud)
+bool LARA_R6::begin(HardwareSerial &hardSerial, unsigned long baud, int8_t rxPin, int8_t txPin)
 {
   if (nullptr == _laraRXBuffer)
   {
@@ -163,6 +163,8 @@ bool LARA_R6::begin(HardwareSerial &hardSerial, unsigned long baud)
   LARA_R6_error_t err;
 
   _hardSerial = &hardSerial;
+  _rxPin = rxPin;
+  _txPin = txPin;
 
   err = init(baud);
   if (err == LARA_R6_ERROR_SUCCESS)
@@ -6192,7 +6194,7 @@ void LARA_R6::beginSerial(unsigned long baud)
   if (_hardSerial != nullptr)
   {
     _hardSerial->end();
-    _hardSerial->begin(baud);
+    _hardSerial->begin(baud, SERIAL_8N1, _rxPin, _txPin);
   }
 #ifdef LARA_R6_SOFTWARE_SERIAL_ENABLED
   else if (_softSerial != nullptr)

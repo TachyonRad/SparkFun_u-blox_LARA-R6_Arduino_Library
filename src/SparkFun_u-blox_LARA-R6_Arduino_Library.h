@@ -587,7 +587,7 @@ public:
 #ifdef LARA_R6_SOFTWARE_SERIAL_ENABLED
   bool begin(SoftwareSerial &softSerial, unsigned long baud = 9600);
 #endif
-  bool begin(HardwareSerial &hardSerial, unsigned long baud = 9600);
+  bool begin(HardwareSerial &hardSerial, unsigned long baud = 9600, int8_t rxPin = -1, int8_t txPin = -1);
 
   // Debug prints
   void enableDebugging(Print &debugPort = Serial); //Turn on debug printing. If user doesn't specify then Serial will be used.
@@ -953,6 +953,7 @@ public:
 
 protected:
   HardwareSerial *_hardSerial;
+  int8_t _rxPin, _txPin;
 #ifdef LARA_R6_SOFTWARE_SERIAL_ENABLED
   SoftwareSerial *_softSerial;
 #endif

@@ -28,6 +28,12 @@
 
 */
 
+#define LTE_PWR_PIN 1       //IO1: OP, 1/IP=OFF, 0=LTE Power ON
+#define LTE_USB_PIN 4       //IO4: OP, 1/IP=OFF, 0=LTE USB Port ON
+#define LTE_MISO_PIN 39     //IO39: UART MISO
+#define LTE_MOSI_PIN 38     //IO38: UART MOSI
+#define LTE_PWRKEY_PIN 48   //IO48: OP, PWRKEY, 2sec LOW for soft ON/OFF
+
 #include <SparkFun_u-blox_LARA-R6_Arduino_Library.h> //Click here to get the library: http://librarymanager/All#SparkFun_u-blox_LARA-R6_Arduino_Library
 
 // Uncomment the next line to connect to the LARA-R6 using hardware Serial1
@@ -40,7 +46,7 @@
 // Usually we would tell the library which GPIO pin to use to control the LARA power (see below),
 // but we can start the LARA without a power pin. It just means we need to manually 
 // turn the power on if required! ;-D
-LARA_R6 myLARA;
+LARA_R6 myLARA(LTE_PWRKEY_PIN);
 
 // Create a LARA_R6 object to use throughout the sketch
 // We need to tell the library what GPIO pin is connected to the LARA power pin.
@@ -73,6 +79,10 @@ void processSIMstate(LARA_R6_sim_states_t state)
 
 void setup()
 {
+  pinMode(LTE_PWR_PIN, OUTPUT);
+  digitalWrite(LTE_PWR_PIN, LOW);       //Power On LTE Module
+  delay(2000);
+
   Serial.begin(115200); // Start the serial console
 
   // Wait for user to press key to begin
@@ -88,10 +98,10 @@ void setup()
 
   // For the MicroMod Asset Tracker, we need to invert the power pin so it pulls high instead of low
   // Comment the next line if required
-  myLARA.invertPowerPin(true); 
+  //myLARA.invertPowerPin(true);
 
   // Initialize the LARA
-  if (myLARA.begin(laraSerial, 115200) )
+  if (myLARA.begin(laraSerial, 115200, LTE_MISO_PIN, LTE_MOSI_PIN))
   {
     Serial.println(F("LARA-R6 connected!"));
   }
